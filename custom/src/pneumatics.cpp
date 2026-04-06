@@ -17,39 +17,56 @@ extern bool prevX;
 
 void pneumaticsControl() {
 
-  // ================= WING TOGGLE =================
-
-  if (l2 && !prevL2) {
-    WingPos = !WingPos;
-    wing.set(WingPos);
-  }
-
-  prevL2 = l2;
+  // ================= OUTER WING =================
+  // L2 held = outer wing down (false), otherwise up (true)
+  outer_wing.set(!l2);
 
 
-  // ================= SCRAPER TOGGLE =================
-
-  if (button_x && !prevX) {
-    ScraperPos = !ScraperPos;
-    scraper.set(ScraperPos);
-
-    
-  }
-
-  prevX = button_x;
+  // ================= LEVER EDGE DETECTION =================
+  static bool prevLeverPos = false;
+  bool leverChanged = (LeverPos != prevLeverPos);
 
 
-  // ================= LEVER TOGGLE =================
+  // ================= INNER WING STATE SYSTEM =================
+  static bool innerWingManual = false;
+  static bool prevY = false;
 
+  // toggle manual inner wing with Y
   if (button_y && !prevY) {
-    LeverPos = !LeverPos;
-    lever.set(LeverPos);
+    innerWingManual = !innerWingManual;
+  }
+  prevY = button_y;
 
-    if (LeverPos) {
-      WingPos = true;
-      wing.set(true);
-    }
+
+  // ================= LEVER OVERRIDE =================
+  static bool leverOverrideActive = false;
+
+  if (leverChanged) {
+    leverOverrideActive = true;
+
+    // force sync inner wing with lever
+    inner_wing.set(LeverPos);
   }
 
-  prevY = button_y;
+
+  // once stable again, release override
+  if (!leverChanged) {
+    leverOverrideActive = false;
+  }
+
+
+  // ================= FINAL INNER WING OUTPUT =================
+  bool innerState;
+
+  if (leverOverrideActive) {
+    innerState = LeverPos;          // safety forced state
+  } else {
+    innerState = innerWingManual;   // player control
+  }
+
+  inner_wing.set(innerState);
+
+
+  // ================= UPDATE LEVER TRACKER =================
+  prevLeverPos = LeverPos;
 }
