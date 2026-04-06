@@ -6,8 +6,6 @@ using code = vision::code;
 
 // A global instance of brain used for printing to the V5 Brain screen
 brain  Brain;
-
-// VEXcode device constructors
 controller controller_1 = controller(primary);
 
 // IMPORTANT: Remember to modify the example motors according to the guide. 
@@ -16,61 +14,57 @@ controller controller_1 = controller(primary);
 // gearSetting is one of the following: ratio36_1(red), ratio18_1(green), ratio6_1(blue)
 // all chassis motors should be reversed appropriately so that they spin vertical when given a positive voltage input
 // such as driveChassis(12, 12)
-motor left_chassis1 = motor(PORT1, ratio6_1, true);
-motor left_chassis2 = motor(PORT2, ratio6_1, true);
-motor left_chassis3 = motor(PORT3, ratio6_1, false);
+motor left_chassis1 = motor(PORT4, ratio6_1, false);
+motor left_chassis2 = motor(PORT17, ratio6_1, true);
+motor left_chassis3 = motor(PORT20, ratio6_1, true);
 motor_group left_chassis = motor_group(left_chassis1, left_chassis2, left_chassis3);
-motor right_chassis1 = motor(PORT4, ratio6_1, false);
-motor right_chassis2 = motor(PORT5, ratio6_1, false);
-motor right_chassis3 = motor(PORT6, ratio6_1, true);
+motor right_chassis1 = motor(PORT16, ratio6_1, false);
+motor right_chassis2 = motor(PORT9, ratio6_1, false);
+motor right_chassis3 = motor(PORT5, ratio6_1, true);
 motor_group right_chassis = motor_group(right_chassis1, right_chassis2, right_chassis3);
 
-inertial inertial_sensor = inertial(PORT7);
-optical example_optical_sensor = optical(PORT8);
-distance example_distance_sensor = distance(PORT9);
-digital_out example_piston = digital_out(Brain.ThreeWirePort.A);
+motor intake = motor(PORT19, ratio6_1, false);
+motor arm = motor(PORT6, ratio36_1, false);
+inertial inertial_sensor = inertial(PORT14);
+
+digital_out wing = digital_out(Brain.ThreeWirePort.G);
+digital_out scraper = digital_out(Brain.ThreeWirePort.C);
+digital_out blockStopper = digital_out(Brain.ThreeWirePort.H);
+digital_out lever = digital_out(Brain.ThreeWirePort.B);
 
 // Format is rotation(port, reversed)
+
 // just set these to random ports if you don't use tracking wheels
-rotation horizontal_tracker = rotation(PORT10, true);
-rotation vertical_tracker = rotation(PORT11, true);
+rotation horizontal_tracker = rotation(PORT1, true);
+rotation vertical_tracker = rotation(PORT2, true);
 
 // Distance reset sensors
 // Set these to random ports if you are not using distance resets
-distance front_sensor = distance(PORT12);
-distance left_sensor = distance(PORT13);
-distance right_sensor = distance(PORT14);
-distance back_sensor = distance(PORT15);
 
-// game specific devices for high stakes
-motor arm_motor1 = motor(PORT16, ratio18_1, true);
-motor arm_motor2 = motor(PORT17, ratio18_1, false);
-motor_group arm_motor = motor_group(arm_motor1, arm_motor2);
-motor intake_motor = motor(PORT18, ratio18_1, true);
-digital_out claw = digital_out(Brain.ThreeWirePort.B);
-digital_out rush_arm = digital_out(Brain.ThreeWirePort.C);
-optical optical_sensor = optical(PORT19);
-distance intake_distance = distance(PORT20);
-distance clamp_distance = distance(PORT21);
-digital_out mogo_mech = digital_out(Brain.ThreeWirePort.D);
+distance front_sensor = distance(PORT3);
+distance left_sensor = distance(PORT21);
+distance right_sensor = distance(PORT7);
+distance back_sensor = distance(PORT8);
+
+
 
 // ============================================================================
 // USER-CONFIGURABLE PARAMETERS (CHANGE BEFORE USING THIS TEMPLATE)
 // ============================================================================
 
 // Distance between the middles of the left and right wheels of the drive (in inches)
-double distance_between_wheels = 12.3;
+double distance_between_wheels = 10.966;
 
 // motor to wheel gear ratio * wheel diameter (in inches) * pi
-double wheel_distance_in = (36.0 / 48.0) * 3.17 * M_PI;
+double wheel_distance_in = (36.0 / 48.0) * 3.25 * M_PI;
 
 // PID Constants for movement
 // distance_* : Linear PID for straight driving
 // turn_*     : PID for turning in place
 // heading_correction_* : PID for heading correction during linear movement
-double distance_kp = 1.1, distance_ki = 0.1, distance_kd = 7;
-double turn_kp = 0.3, turn_ki = 0, turn_kd = 2.5;
-double heading_correction_kp = 0.6, heading_correction_ki = 0, heading_correction_kd = 4;
+double distance_kp = 2.4, distance_ki = 0, distance_kd = 30.4;
+double turn_kp = 0.8067, turn_ki = 0, turn_kd = 6;
+double heading_correction_kp = 0.7, heading_correction_ki = 0, heading_correction_kd = 32;
 
 // Enable or disable the use of tracking wheels
 bool using_horizontal_tracker = false;  // Set to true if a horizontal tracking wheel is installed and used for odometry
@@ -112,10 +106,10 @@ bool dir_change_end = true;     // Less accel/decel due to expecting direction c
 double min_output = 10; // Minimum output voltage to motors while chaining movements
 
 // Maximum allowed change in voltage output per 10 msec during movement
-double max_slew_accel_fwd = 24;
-double max_slew_decel_fwd = 24;
-double max_slew_accel_rev = 24;
-double max_slew_decel_rev = 24;
+double max_slew_accel_fwd = 11;
+double max_slew_decel_fwd = 11;
+double max_slew_accel_rev = 11;
+double max_slew_decel_rev = 11;
 
 // Prevents too much slipping during boomerang movements
 // Decrease if there is too much drifting and inconsistency during boomerang

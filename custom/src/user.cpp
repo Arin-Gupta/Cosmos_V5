@@ -2,26 +2,100 @@
 #include "motor-control.h"
 #include "../custom/include/autonomous.h"
 #include "../custom/include/robot-config.h"
+#include "../custom/include/arm_macro.h"
+#include "../custom/include/expo.h"
+#include "../custom/include/controller.h"
+#include "../custom/include/heading.h"
+#include "../custom/include/intake.h"
+#include "../custom/include/arm.h"
+#include "../custom/include/pneumatics.h"
 
 // Modify autonomous, driver, or pre-auton code below
 
+int screenThread() {
+    Brain.Screen.clearScreen();
+    Brain.Screen.setFillColor(vex::color(180,0,0));
+    Brain.Screen.drawRectangle(0,0,480,240);
+    Brain.Screen.setFillColor(black);
+    Brain.Screen.setFont(fontType::mono20);
+
+    // --- Draw Boxes ---
+    Brain.Screen.setPenColor(white);
+    Brain.Screen.drawRectangle(30,25,180,120);      // Inertial
+    Brain.Screen.drawRectangle(30,155,180,60);      // Team ID
+    Brain.Screen.drawRectangle(225,30,230,180);     // Motor temps
+
+    // --- Labels ---
+    Brain.Screen.printAt(40,50,"X:");
+    Brain.Screen.printAt(40,85,"Y:");
+    Brain.Screen.printAt(40,120,"Heading:");
+    Brain.Screen.printAt(40,190,"  20785X NOVA");
+
+    Brain.Screen.printAt(265,55,"L1:");
+    Brain.Screen.printAt(265,75,"L2:");
+    Brain.Screen.printAt(265,95,"L3:");
+    Brain.Screen.printAt(265,115,"R1:");
+    Brain.Screen.printAt(265,135,"R2:");
+    Brain.Screen.printAt(265,155,"R3:");
+    Brain.Screen.printAt(265,175,"INT:");
+    Brain.Screen.printAt(265,195,"ARM:");
+
+    while(true){
+        Brain.Screen.setPenColor(white);
+
+        // --- X / Y ---
+        Brain.Screen.printAt(140,50,"%6.2f",x_pos);
+        Brain.Screen.printAt(140,85,"%6.2f",y_pos);
+
+        // --- Heading normalized to ±180 ---
+        double h = getInertialHeading();
+        while(h > 180)  h -= 360;
+        while(h <= -180) h += 360;
+
+        Brain.Screen.printAt(140,120,"%6.2f",h);
+
+        // --- Motor temps ---
+        auto printTemp=[&](int y,motor&m){
+            double t = m.temperature(celsius);
+            Brain.Screen.setPenColor(t>=55?red:t>=40?yellow:green);
+            Brain.Screen.printAt(350,y,"%5.1fC  ",t);
+        };
+
+        printTemp(55,left_chassis1);
+        printTemp(75,left_chassis2);
+        printTemp(95,left_chassis3);
+        printTemp(115,right_chassis1);
+        printTemp(135,right_chassis2);
+        printTemp(155,right_chassis3);
+        printTemp(175,intake);
+        printTemp(195,arm);
+
+        wait(100,msec);
+    }
+    return 0;
+}
+
+
 void runAutonomous() {
-  int auton_selected = 3;
+  int auton_selected = 1;
   switch(auton_selected) {
     case 1:
-      exampleAuton();
-      break;
+      R4BP();
+      break;  
     case 2:
-      exampleAuton2();
+      R4_2();
       break;  
     case 3:
-      redGoalRush();
+      L4BP();
       break;
     case 4:
+      Skills20();
       break; 
     case 5:
+      Skills15();
       break;
     case 6:
+      SAWP();
       break;
     case 7:
       break;
@@ -32,6 +106,7 @@ void runAutonomous() {
   }
 }
 
+
 // controller_1 input variables (snake_case)
 int ch1, ch2, ch3, ch4;
 bool l1, l2, r1, r2;
@@ -39,41 +114,50 @@ bool button_a, button_b, button_x, button_y;
 bool button_up_arrow, button_down_arrow, button_left_arrow, button_right_arrow;
 int chassis_flag = 0;
 
+// ================= DRIVER STATE =================
+
+// Heading hold
+bool headingLocked = false;
+double targetHeading = 0;
+
+// Toggle states
+int IntakeState = 0;
+bool WingPos = false;
+bool ScraperPos = false;
+bool LeverPos = false;
+
+// Edge detection
+bool prevR1 = false, prevR2 = false, prevL1 = false;
+bool prevUp = false, prevL2 = false, prevY = false, prevX = false;
+
+
 void runDriver() {
-  stopChassis(coast);
+  stopChassis(brake);
+  intake.setStopping(brake);
+  arm.setStopping(brake);
   heading_correction = false;
+
+  thread radiant(screenThread);
+
   while (true) {
-    // [-100, 100] for controller stick axis values
-    ch1 = controller_1.Axis1.value();
-    ch2 = controller_1.Axis2.value();
-    ch3 = controller_1.Axis3.value();
-    ch4 = controller_1.Axis4.value();
 
-    // true/false for controller button presses
-    l1 = controller_1.ButtonL1.pressing();
-    l2 = controller_1.ButtonL2.pressing();
-    r1 = controller_1.ButtonR1.pressing();
-    r2 = controller_1.ButtonR2.pressing();
-    button_a = controller_1.ButtonA.pressing();
-    button_b = controller_1.ButtonB.pressing();
-    button_x = controller_1.ButtonX.pressing();
-    button_y = controller_1.ButtonY.pressing();
-    button_up_arrow = controller_1.ButtonUp.pressing();
-    button_down_arrow = controller_1.ButtonDown.pressing();
-    button_left_arrow = controller_1.ButtonLeft.pressing();
-    button_right_arrow = controller_1.ButtonRight.pressing();
+    controllerInput();
+    headingHold();
+    intakeToggle();
+    armControl();
+    pneumaticsControl();
 
-    // default tank drive or replace it with your preferred driver code here: 
-    driveChassis(ch3 * 0.12, ch2 * 0.12);
-
-    wait(10, msec); 
+    wait(10, msec);
   }
 }
 
 void runPreAutonomous() {
     // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-  
+  wing.set(true);
+  scraper.set(true);
+  lever.set(true);
+
   // Calibrate inertial sensor
   inertial_sensor.calibrate();
 
@@ -82,8 +166,7 @@ void runPreAutonomous() {
     wait(10, msec);
   }
 
-  double current_heading = inertial_sensor.heading();
-  Brain.Screen.print(current_heading);
+  thread nova(screenThread);
   
   // odom tracking
   resetChassis();
@@ -96,4 +179,10 @@ void runPreAutonomous() {
   } else {
     thread odom = thread(trackNoOdomWheel);
   }
+
+  stopChassis(brake);
+  intake.setStopping(brake);
+  arm.setStopping(brake);
+
+  
 }

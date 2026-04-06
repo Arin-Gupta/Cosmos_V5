@@ -12,167 +12,134 @@
 // Call these functions from custom/include/user.cpp
 // Format: returnType functionName() { code }
 
-void exampleAuton() {
-  // Use this for tuning linear and turn pid
-  driveTo(60, 3000);
-  turnToAngle(90, 2000);
-  turnToAngle(135, 2000);
-  turnToAngle(150, 2000);
-  turnToAngle(160, 2000);
-  turnToAngle(165, 2000);
-  turnToAngle(0, 2000);
-  driveTo(-60, 3000);
+void ArmAuton() {
+  blockStopper.set(true);
+
+  arm.spin(forward, 90, percent);
+  wait(1000, msec);
+
+  arm.spin(reverse, 100, percent);
+  wait(600, msec);
+
+  blockStopper.set(false);
+  arm.stop();
 }
 
-void exampleAuton2() {
-  moveToPoint(24, 24, 1, 2000, false);
-  moveToPoint(48, 48, 1, 2000, true);
-  moveToPoint(24, 24, -1, 2000, true);
-  moveToPoint(0, 0, 1, 2000, true);
-  correct_angle = 0;
-  driveTo(24, 2000, false, 8);
-  turnToAngle(90, 800, false);
-  turnToAngle(180, 800, true);
+void Scraper4BP() {
+  wait(900,msec);
+  scraper.set(false);
+  wait(300,msec);
+  scraper.set(true);
 }
 
-double arm_pid_target = 0, arm_load_target = 60, arm_store_target = 250, arm_score_target = 470;
+void R4BP() {
+  thread scr(Scraper4BP);
+  intake.setVelocity(600, rpm); intake.spin(forward);
+  lever.set(false);
+  wing.set(false);
 
-/*
- * armPID
- * Runs a single PID update for the arm motor to reach the specified target position.
- * - arm_target: Desired arm position (degrees).
- */
-void armPID(double arm_target) {
-  PID pidarm = PID(0.1, 0, 0.5); // Initialize PID controller for arm
-  pidarm.setTarget(arm_target);   // Set target position
-  pidarm.setIntegralMax(0);  
-  pidarm.setIntegralRange(1);
-  pidarm.setSmallBigErrorTolerance(1, 1);
-  pidarm.setSmallBigErrorDuration(0, 0);
-  pidarm.setDerivativeTolerance(100);
-  pidarm.setArrive(true);
-  arm_motor.spin(fwd, pidarm.update(arm_motor.position(deg)), volt); // Apply PID output to arm motor
+  boomerang(13,29,1,45,0.3,2000,true,6,false); wait(300,msec);
+
+  wing.set(true);
+  turnToAngle(135, 1000,true,10); wait(100,msec);
+  scraper.set(false);
+  intake.setVelocity(100, rpm); intake.spin(reverse);
+  wait(50,msec);
+  intake.setVelocity(600, rpm); intake.spin(forward);  
+  scraper.set(true);
+
+  wait(1100, msec);
+  
+  boomerang(48.5 ,-6.5,1,180,0.1,5000,true,12,false); wait(100, msec);
+  turnToAngle(180,1000,false,12);
+
+  moveToPoint(48.5, 30, -1, 1000, true, 12,false);
+  moveToPoint(48.5,29.5,1,100,true,12,false);
+  turnToAngle(185, 500);
+  turnToAngle(175, 500);
+  turnToAngle(185, 500);
+  turnToAngle(175, 500);
+  turnToAngle(180, 500);
+
+  
+  thread scoring(ArmAuton);
+
+  wait(1000, msec);
+
+  thread scorin(ArmAuton);
+
+  wait(1000, msec);
+
+  moveToPoint(48.5, 0 ,1,3000,true,11,false);
+  turnToAngle(230, 500);
+  moveToPoint(57,10,-1,1000, true, 11,false);
+  turnToAngle(180, 1000,true,11);
+  moveToPoint(57,38,-1,3000,true,11,false);
+  stopChassis(hold);
+  wait(3000, msec);
+  turnToAngle(200, 500, true, 12);
+
 }
 
-/*
- * armPIDLoop
- * Continuously runs the arm PID control in a separate thread, keeping the arm at the target position.
- */
-void armPIDLoop() {
-  while(true) {
-    armPID(arm_pid_target); // Continuously update arm position
-    wait(10, msec);
-  }
+void L4BP() {
+  // thread scr(Scraper4BP);
+  intake.setVelocity(600, rpm); intake.spin(forward);
+  wing.set(false);
+
+  boomerang(-13,29,1,45,0.3,2000,true,8,false); wait(100,msec);
+
+  wing.set(true);
+  turnToAngle(-135, 1000,true,12); wait(100,msec);
+  boomerang(-20,-7.7,1,-180,0.1,5000,true,12,false);
+  turnToAngle(-180,1000,false,12);
+  moveToPoint(-20, 30, -1, 1000, true, 12,false);
+  moveToPoint(-20, 8, 1, 1500, true, 12,false);
+  moveToPoint(-20, 30, -1, 1200, true, 12,false);
+  
+  thread scoring(ArmAuton);
+
+  wait(1000, msec);
+
+  
+
+  moveToPoint(-20, 0 ,1,3000,true,11,false);
+  turnToAngle(230, 500);
+  moveToPoint(-11.5,25,-1,1000, true, 11,false);
+  turnToAngle(180, 1000,true,11);
+  
+
+  moveToPoint(-11.5,38,-1,3000,true,11,false);
+  stopChassis(hold);
+  wait(3000, msec);
+  turnToAngle(200, 500, true, 12);
+
 }
 
-/*
- * rushClamp
- * Waits until the clamp distance sensor detects an object within 85mm, then closes the claw and lowers the rush arm.
- * Used for quickly grabbing a mobile goal at the start of autonomous.
- */
-void rushClamp() {
-  while(clamp_distance.objectDistance(mm) > 85) { // Wait for object to be close enough
-    wait(10, msec);
-  }
-  claw.set(true);        // Close the claw to grab the goal
-  rush_arm.set(false);   // Lower the rush arm
+void R4_2() {
+  intake.setVelocity(600, rpm); intake.spin(forward);
+
+  boomerang(13,29,1,45,0.3,2000,true,8,false);
+  turnToAngle(135, 1000,true,12);
+  boomerang(45,-7.7,1,180,0.1,5000,true,12,false);
+  turnToAngle(180,1000,false,12);
+  moveToPoint(45, 30, -1, 1500, true, 12,false);
+  thread scoring(ArmAuton); wait(1000, msec);
+
+  turnToAngle(-90, 1000, false, 12);
+  boomerang(40,25,1,0,0.1,2000,true,12,false);
+  moveToPoint(45,30,1,2000,true,2,false);
 }
 
-/*
- * intakeThread
- * Runs the intake until an object is detected by the optical or distance sensor, then stops the intake.
- * Used for picking up rings or other objects during autonomous.
- */
-void intakeThread(){
-  optical_sensor.setLight(ledState::on);      // Turn on optical sensor light
-  optical_sensor.setLightPower(100);          // Set light power to max
-  while(!optical_sensor.isNearObject() && intake_distance.objectDistance(mm) > 50){
-    wait(10, msec);                           // Wait until object is detected
-  }
-  intake_motor.stop(hold);                    // Stop intake motor and hold
+void Skills15() {
+  intake.setVelocity(600,rpm); wait(1000, msec); intake.setVelocity(0, rpm);
 }
 
-/*
- * redGoalRush
- * 2024-2025 World Championship runner-up(1698V) autonomous routine.
- * This routine executes a complex sequence to rush, grab, and score mobile goals and rings.
- * It uses multiple threads for simultaneous arm, clamp, and intake control.
- */
-void redGoalRush() {
-  arm_motor.setPosition(arm_load_target, deg);         // Set arm to load position
-  correct_angle = inertial_sensor.rotation();          // Sync correct_angle with inertial sensor
-  arm_pid_target = arm_store_target;                   // Set arm PID target to store position
+void Skills20() {
+  intake.setVelocity(-600,rpm);
+  moveToPoint(0, -19, -1, 5000, true, 6, false);
+  moveToPoint(0,100,1,5000,true,12,false);
+}
 
-  thread al = thread(armPIDLoop);                      // Start arm PID loop in a thread
-  thread rc = thread(rushClamp);                       // Start clamp routine in a thread
-  intake_motor.spin(fwd, 12, volt);                    // Start intake motor at full speed
-  thread it = thread(intakeThread);                    // Start intake sensor thread
-  rush_arm.set(true);                                  // Lower rush arm
-
-  driveTo(33, 1100, true);                             // Drive forward to first goal
-  moveToPoint(-2, 10, -1, 15000, false);               // Pull the goal back
-  stopChassis(hold);                                   // Stop chassis and hold position
-
-  rc.interrupt();                                      // Stop clamp thread (goal should be clamped)
-  rush_arm.set(true);                                  // Lower rush arm again (ensure down)
-  claw.set(false);                                     // Open claw to release goal
-  wait(100, msec);                                     // Brief pause
-
-  correct_angle = normalizeTarget(-20);                // Adjust target heading for next maneuver
-  driveTo(3, 800, true, 8);                            // Drive forward slightly
-  driveTo(-5, 1000, true);                             // Back up
-
-  rush_arm.set(false);                                 // Raise rush arm
-  wait(200, msec);                                     // Wait for arm to raise
-
-  turnToAngle(-90, 800, false);                        // Turn to face the goal backwards
-  moveToPoint(0, 26, -1, 2000, false, 6);              // Move backwards into the goal
-  driveChassis(-1.5, -1.5);                            // Slowly drive backward for alignment
-  mogo_mech.set(true);                                 // Clamp mobile goal
-  wait(100, msec);                                     // Wait for clamp
-
-  it.interrupt();                                      // Stop intake thread (ring should be collected)
-  intake_motor.spin(fwd, 12, volt);                    // Restart intake
-
-  moveToPoint(1, 7, 1, 2000, true);                    // Move near corner to drop goal
-  turnToAngle(-90, 350, true);                         // Turn to drop goal
-  mogo_mech.set(false);                                // Release mobile goal clamp
-  driveChassis(-4, 4);                                 // Turn a bit to align with next target
-  wait(300, msec);                                     // Wait for spin
-
-  intake_motor.spin(fwd, -12, volt);                   // Reverse intake to push disc in front away
-  moveToPoint(-13, -4, 1, 1500, false, 10);            // Move forward to push disc out of the way
-  turnToAngle(180, 800, false);                        // Turn to clamp goal
-  intake_motor.spin(fwd, 0, volt);                     // Stop intake
-
-  moveToPoint(-31, 26, -1, 2000, false, 6);            // Move backwards into the next goal
-  driveChassis(-1.5, -1.5);                            // Slowly drive backward for alignment
-  mogo_mech.set(true);                                 // Clamp mobile goal
-  wait(100, msec);                                     // Wait for clamp
-
-  turnToAngle(145, 300, true);                         // Turn to face corner
-  moveToPoint(-4, -3, 1, 2000, false);                 // Move to corner
-  intake_motor.spin(fwd, 12, volt);                    // Start intake
-
-  correct_angle = normalizeTarget(135);                // Update heading for next maneuver
-  driveTo(1000, 1500, false, 4);                       // Drive forward infinitely until timeout
-  driveTo(-13, 2000, true, 6);                         // Back up
-  driveTo(10, 2500, true, 3);                          // Drive forward to intake second corner ring
-
-  wait(200, msec);                                     // Brief wait for intake
-
-  moveToPoint(-11, 6, -1, 2000, false, 10);            // Move backward out of the corner
-  turnToAngle(45, 400, true);                          // Turn to align for wallstake
-
-  al.interrupt();                                      // Stop arm PID thread
-  arm_pid_target = arm_score_target - 100;             // Set arm to scoring position
-  thread al2 = thread(armPIDLoop);                     // Start new arm PID thread
-
-  moveToPoint(12, 34, 1, 1700, true, 8);               // Move forward to final wallstake scoring position
-
-  al2.interrupt();                                     // Stop arm PID thread
-  arm_motor.spin(fwd, 1, volt);                        // Spin arm forward slightly
-
-  turnToAngle(40, 200);                                // Final turn for alignment
-  driveChassis(1, 1);                                  // Slow drive forward
+void SAWP() {
+  driveTo(10,5000,true,5);
 }
