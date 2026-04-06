@@ -1,4 +1,8 @@
 #include "../custom/include/arm_macro.h"
+#include "../custom/include/arm.h"
+
+const int LAUNCH_RAMP_STEP = 5;
+int currentArmPower = 0;
 
 volatile bool armMacroRunning = false;
 volatile bool armMacroCancel = false;
@@ -9,41 +13,56 @@ int armMacroTask() {
     armMacroRunning = true;
     armMacroCancel  = false;
 
-    int speed = 100;
-    int reverseTime = 600;
-
     if (armMacroID == 2) {
-        speed = 30;
-        reverseTime = 1000;
-    }
+        // ---- Slow shot (lever down) ----
+        int speed = 30;
+        int reverseTime = 1000;
 
-    blockStopper.set(true);
+        blockStopper.set(true);
 
-    // Phase 1: spin forward for up to 1000ms
-    arm.spin(forward, speed, percent);
-    for (int i = 0; i < 100; i++) {       // 100 x 10ms = 1000ms
-        if (armMacroCancel) {
-            arm.stop();
-            blockStopper.set(false);
-            armMacroRunning = false;
-            return 0;                       // exit immediately
+        arm.spin(forward, speed, percent);
+        for (int i = 0; i < 100; i++) {
+            if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            wait(10, msec);
         }
-        wait(10, msec);
-    }
 
-    // Phase 2: spin reverse
-    arm.spin(reverse, speed, percent);
-    for (int i = 0; i < reverseTime / 10; i++) {
-        if (armMacroCancel) {
-            arm.stop();
-            blockStopper.set(false);
-            armMacroRunning = false;
-            return 0;
+        arm.spin(reverse, speed, percent);
+        for (int i = 0; i < reverseTime / 10; i++) {
+            if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            wait(10, msec);
         }
-        wait(10, msec);
+
+    } else {
+        // ---- Fast shot with ramp (lever up) ----
+        // Tune LAUNCH_RAMP_STEP in arm.cpp to control how fast it accelerates
+        int power = 0;
+        blockStopper.set(true);
+
+        // Ramp up to 100%
+        while (power < 100) {
+            if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            power += LAUNCH_RAMP_STEP;
+            if (power > 100) power = 100;
+            arm.spin(forward, power, percent);
+            wait(10, msec);
+        }
+
+        // Hold at 100% for remainder of 1000ms
+        // ramp took (100 / LAUNCH_RAMP_STEP) * 10ms, so wait the rest
+        int rampTime = (100 / LAUNCH_RAMP_STEP) * 10;
+        int holdTime = 1000 - rampTime;
+        for (int i = 0; i < holdTime / 10; i++) {
+            if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            wait(10, msec);
+        }
+
+        arm.spin(reverse, 100, percent);
+        for (int i = 0; i < 60; i++) {  // 600ms reverse
+            if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            wait(10, msec);
+        }
     }
 
-    // Completed normally
     blockStopper.set(false);
     arm.stop();
     armMacroRunning = false;
