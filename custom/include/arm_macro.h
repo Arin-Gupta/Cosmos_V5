@@ -3,9 +3,9 @@
 
 #include "vex.h"  // this includes vex::thread and all VEX classes
 
-extern bool armMacroRunning;
-extern bool armMacroCancel;
-extern int armMacroID;
+extern volatile bool armMacroRunning;
+extern volatile bool armMacroCancel;
+extern volatile int armMacroID;
 extern vex::thread armThread;  // use vex::thread
 
 int armMacroTask();

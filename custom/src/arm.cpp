@@ -7,14 +7,13 @@ extern bool button_a;
 extern bool button_b;
 extern bool l1;
 extern bool button_up_arrow;
-extern int IntakeState();
 
 extern bool prevL1;
 extern bool prevUp;
 
-extern bool armMacroRunning;
-extern bool armMacroCancel;
-extern int armMacroID;
+extern volatile bool armMacroRunning;
+extern volatile bool armMacroCancel;
+extern volatile int  armMacroID;
 extern vex::thread armThread;
 
 bool armIdleUp = false;
@@ -28,35 +27,37 @@ void armControl() {
 
   if (button_a || button_b) {
 
+    // Cancel macro and wait for it to actually stop
     if (armMacroRunning) {
       armMacroCancel = true;
+      int waitCount = 0;
+      while (armMacroRunning && waitCount < 20) {
+        wait(10, msec);
+        waitCount++;
+      }
     }
 
-    armMacroRunning = false;
-    armMacroID = 0;
-
     if (button_a)
-      arm.spin(forward,100,rpm);
+      arm.spin(forward, 100, percent);
     else
-      arm.spin(reverse,100,rpm);
+      arm.spin(reverse, 100, percent);
   }
-else if (!armMacroRunning) {
-  arm.spin(reverse,0,rpm);
-}
+  else if (!armMacroRunning) {
+    arm.spin(forward, 0, percent);
+  }
 
   // ================= ARM MACROS =================
 
   if (l1 && !prevL1 && !armMacroRunning) {
     armMacroID = 1;
-    armThread = thread(armMacroTask);
+    armThread = vex::thread(armMacroTask);
   }
 
   if (button_up_arrow && !prevUp && !armMacroRunning) {
     armMacroID = 2;
-    armThread = thread(armMacroTask);
+    armThread = vex::thread(armMacroTask);
   }
 
   prevL1 = l1;
   prevUp = button_up_arrow;
-
 }

@@ -137,7 +137,7 @@ void runDriver() {
   arm.setStopping(brake);
   heading_correction = false;
 
-  thread radiant(screenThread);
+  thread cosmos(screenThread);
 
   while (true) {
 
