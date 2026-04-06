@@ -17,10 +17,11 @@ extern motor_group right_chassis;
 extern inertial inertial_sensor;
 extern motor intake;
 extern motor arm;
-extern digital_out wing;
+extern digital_out outer_wing;
 extern digital_out scraper;
 extern digital_out blockStopper;
 extern digital_out lever;
+extern digital_out inner_wing;
 
 extern rotation horizontal_tracker;
 extern rotation vertical_tracker;

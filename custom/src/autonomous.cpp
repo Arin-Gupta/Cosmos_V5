@@ -36,11 +36,12 @@ void R4BP() {
   thread scr(Scraper4BP);
   intake.setVelocity(600, rpm); intake.spin(forward);
   lever.set(false);
-  wing.set(false);
+  outer_wing.set(false);
+  inner_wing.set(false);
 
   boomerang(13,29,1,45,0.3,2000,true,6,false); wait(300,msec);
 
-  wing.set(true);
+  outer_wing.set(true);
   turnToAngle(135, 1000,true,10); wait(100,msec);
   scraper.set(false);
   intake.setVelocity(100, rpm); intake.spin(reverse);
@@ -84,11 +85,11 @@ void R4BP() {
 void L4BP() {
   // thread scr(Scraper4BP);
   intake.setVelocity(600, rpm); intake.spin(forward);
-  wing.set(false);
+  outer_wing.set(false);
 
   boomerang(-13,29,1,45,0.3,2000,true,8,false); wait(100,msec);
 
-  wing.set(true);
+  outer_wing.set(true);
   turnToAngle(-135, 1000,true,12); wait(100,msec);
   boomerang(-20,-7.7,1,-180,0.1,5000,true,12,false);
   turnToAngle(-180,1000,false,12);
@@ -113,31 +114,6 @@ void L4BP() {
   wait(3000, msec);
   turnToAngle(200, 500, true, 12);
 
-}
-
-void R4_2() {
-  intake.setVelocity(600, rpm); intake.spin(forward);
-
-  boomerang(13,29,1,45,0.3,2000,true,8,false);
-  turnToAngle(135, 1000,true,12);
-  boomerang(45,-7.7,1,180,0.1,5000,true,12,false);
-  turnToAngle(180,1000,false,12);
-  moveToPoint(45, 30, -1, 1500, true, 12,false);
-  thread scoring(ArmAuton); wait(1000, msec);
-
-  turnToAngle(-90, 1000, false, 12);
-  boomerang(40,25,1,0,0.1,2000,true,12,false);
-  moveToPoint(45,30,1,2000,true,2,false);
-}
-
-void Skills15() {
-  intake.setVelocity(600,rpm); wait(1000, msec); intake.setVelocity(0, rpm);
-}
-
-void Skills20() {
-  intake.setVelocity(-600,rpm);
-  moveToPoint(0, -19, -1, 5000, true, 6, false);
-  moveToPoint(0,100,1,5000,true,12,false);
 }
 
 void SAWP() {
