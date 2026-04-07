@@ -22,51 +22,27 @@ void pneumaticsControl() {
   outer_wing.set(!l2);
 
 
-  // ================= LEVER EDGE DETECTION =================
-  static bool prevLeverPos = false;
-  bool leverChanged = (LeverPos != prevLeverPos);
-
-
-  // ================= INNER WING STATE SYSTEM =================
+  // ================= INNER WING MANUAL TOGGLE =================
   static bool innerWingManual = false;
-  static bool prevY = false;
+  static bool prevYLocal = false;
 
-  // toggle manual inner wing with Y
-  if (button_y && !prevY) {
+  // Toggle manual control with Y (edge detection)
+  if (button_y && !prevYLocal) {
     innerWingManual = !innerWingManual;
   }
-  prevY = button_y;
+  prevYLocal = button_y;
 
 
-  // ================= LEVER OVERRIDE =================
-  static bool leverOverrideActive = false;
-
-  if (leverChanged) {
-    leverOverrideActive = true;
-
-    // force sync inner wing with lever
-    inner_wing.set(LeverPos);
-  }
-
-
-  // once stable again, release override
-  if (!leverChanged) {
-    leverOverrideActive = false;
-  }
-
-
-  // ================= FINAL INNER WING OUTPUT =================
+  // ================= INNER WING FINAL LOGIC =================
   bool innerState;
 
-  if (leverOverrideActive) {
-    innerState = LeverPos;          // safety forced state
+  if (LeverPos) {
+    // Lever UP → force inner wing UP
+    innerState = true;
   } else {
-    innerState = innerWingManual;   // player control
+    // Lever DOWN → allow manual toggle
+    innerState = innerWingManual;
   }
 
   inner_wing.set(innerState);
-
-
-  // ================= UPDATE LEVER TRACKER =================
-  prevLeverPos = LeverPos;
 }

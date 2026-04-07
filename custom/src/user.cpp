@@ -83,16 +83,13 @@ void runAutonomous() {
       R4BP();
       break;  
     case 2:
-      R4_2();
       break;  
     case 3:
       L4BP();
       break;
     case 4:
-      Skills20();
       break; 
     case 5:
-      Skills15();
       break;
     case 6:
       SAWP();
@@ -154,7 +151,7 @@ void runDriver() {
 void runPreAutonomous() {
     // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-  wing.set(true);
+  outer_wing.set(true);
   scraper.set(true);
   lever.set(true);
 

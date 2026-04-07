@@ -33,10 +33,10 @@ void Scraper4BP() {
 }
 
 void R4BP() {
-  thread scr(Scraper4BP);
+  //thread scr(Scraper4BP);
   intake.setVelocity(600, rpm); intake.spin(forward);
   lever.set(false);
-  outer_wing.set(false);
+  outer_wing.set(false); 
   inner_wing.set(false);
 
   boomerang(13,29,1,45,0.3,2000,true,6,false); wait(300,msec);

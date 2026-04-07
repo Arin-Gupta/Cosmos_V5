@@ -22,16 +22,15 @@ motor right_chassis1 = motor(PORT16, ratio6_1, false);
 motor right_chassis2 = motor(PORT9, ratio6_1, false);
 motor right_chassis3 = motor(PORT5, ratio6_1, true);
 motor_group right_chassis = motor_group(right_chassis1, right_chassis2, right_chassis3);
-
 motor intake = motor(PORT19, ratio6_1, false);
 motor arm = motor(PORT6, ratio36_1, false);
 inertial inertial_sensor = inertial(PORT14);
 
 digital_out outer_wing = digital_out(Brain.ThreeWirePort.G);
-digital_out scraper = digital_out(Brain.ThreeWirePort.C);
+digital_out scraper = digital_out(Brain.ThreeWirePort.A);
 digital_out blockStopper = digital_out(Brain.ThreeWirePort.H);
 digital_out lever = digital_out(Brain.ThreeWirePort.B);
-digital_out inner_wing = digital_out(Brain.ThreeWirePort.A);
+digital_out inner_wing = digital_out(Brain.ThreeWirePort.C);
 
 // Format is rotation(port, reversed)
 

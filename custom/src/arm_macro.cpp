@@ -1,7 +1,7 @@
 #include "../custom/include/arm_macro.h"
 #include "../custom/include/arm.h"
 
-const int LAUNCH_RAMP_STEP = 5;
+static const int LAUNCH_RAMP_STEP = 5;
 int currentArmPower = 0;
 
 volatile bool armMacroRunning = false;
