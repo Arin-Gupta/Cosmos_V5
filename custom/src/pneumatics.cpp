@@ -8,13 +8,8 @@ extern bool button_x;
 
 void pneumaticsControl() {
 
-  // ================= OUTER WING =================
-  // Hold L2 → down, release → up
-  outer_wing.set(!l2);
-
-
   // ================= LEVER (Y TOGGLE) =================
-  static bool LeverPos = false;   // false = down, true = up
+  static bool LeverPos = true;  // true = up, false = down
   static bool prevY = false;
 
   if (button_y && !prevY) {
@@ -22,10 +17,20 @@ void pneumaticsControl() {
   }
   prevY = button_y;
 
+  lever.set(LeverPos);
 
-  // ================= INNER WING =================
-  // Always follows lever
-  inner_wing.set(LeverPos);
+
+  // ================= STATE MACHINE =================
+  if (LeverPos) {
+    // LEVER UP: L2 controls outer wing, inner wing always up
+    outer_wing.set(l2);
+    inner_wing.set(false);
+
+  } else {
+    // LEVER DOWN: L2 controls inner wing, outer wing always down
+    inner_wing.set(l2);
+    outer_wing.set(true);
+  }
 
 
   // ================= SCRAPER (X TOGGLE) =================
@@ -38,11 +43,4 @@ void pneumaticsControl() {
   prevX = button_x;
 
   scraper.set(ScraperPos);
-
-
-  // ================= OPTIONAL: LEVER PNEUMATIC =================
-  // Uncomment if you have a physical piston for the lever
-  lever.set(LeverPos);
-
-  wait(20,msec);
 }
