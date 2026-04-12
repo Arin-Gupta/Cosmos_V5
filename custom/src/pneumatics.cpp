@@ -17,19 +17,19 @@ void pneumaticsControl() {
   }
   prevY = button_y;
 
-  lever.set(LeverPos);
+  lever.set(!LeverPos);
 
 
   // ================= STATE MACHINE =================
   if (LeverPos) {
     // LEVER UP: L2 controls outer wing, inner wing always up
-    outer_wing.set(l2);
-    inner_wing.set(false);
+    outer_wing.set(!l2);
+    inner_wing.set(true);
 
   } else {
     // LEVER DOWN: L2 controls inner wing, outer wing always down
-    inner_wing.set(l2);
-    outer_wing.set(true);
+    inner_wing.set(!l2);
+    outer_wing.set(false);
   }
 
 

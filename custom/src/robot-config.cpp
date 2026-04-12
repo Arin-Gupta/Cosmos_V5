@@ -24,7 +24,7 @@ motor right_chassis3 = motor(PORT5, ratio6_1, true);
 motor_group right_chassis = motor_group(right_chassis1, right_chassis2, right_chassis3);
 motor intake = motor(PORT19, ratio6_1, false);
 motor arm = motor(PORT6, ratio36_1, false);
-inertial inertial_sensor = inertial(PORT14);
+inertial inertial_sensor = inertial(PORT15);
 
 digital_out outer_wing = digital_out(Brain.ThreeWirePort.G);
 digital_out scraper = digital_out(Brain.ThreeWirePort.A);
