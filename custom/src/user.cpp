@@ -151,7 +151,7 @@ void runDriver() {
 void runPreAutonomous() {
     // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-  outer_wing.set(true);
+  wing.set(true);
   scraper.set(true);
   lever.set(true);
 

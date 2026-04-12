@@ -2,45 +2,54 @@
 #include "../custom/include/pneumatics.h"
 
 // From user.cpp
+extern bool WingPos;
+extern bool ScraperPos;
+extern bool LeverPos;
+
 extern bool l2;
 extern bool button_y;
 extern bool button_x;
 
+extern bool prevL2;
+extern bool prevY;
+extern bool prevX;
+
+
 void pneumaticsControl() {
 
-  // ================= LEVER (Y TOGGLE) =================
-  static bool LeverPos = true;  // true = up, false = down
-  static bool prevY = false;
+  // ================= WING TOGGLE =================
 
-  if (button_y && !prevY) {
-    LeverPos = !LeverPos;
-  }
-  prevY = button_y;
-
-  lever.set(!LeverPos);
-
-
-  // ================= STATE MACHINE =================
-  if (LeverPos) {
-    // LEVER UP: L2 controls outer wing, inner wing always up
-    outer_wing.set(!l2);
-    inner_wing.set(true);
-
-  } else {
-    // LEVER DOWN: L2 controls inner wing, outer wing always down
-    inner_wing.set(!l2);
-    outer_wing.set(false);
+  if (l2 && !prevL2) {
+    WingPos = !WingPos;
+    wing.set(WingPos);
   }
 
+  prevL2 = l2;
 
-  // ================= SCRAPER (X TOGGLE) =================
-  static bool ScraperPos = false;
-  static bool prevX = false;
+
+  // ================= SCRAPER TOGGLE =================
 
   if (button_x && !prevX) {
     ScraperPos = !ScraperPos;
+    scraper.set(ScraperPos);
+
+    
   }
+
   prevX = button_x;
 
-  scraper.set(ScraperPos);
+
+  // ================= LEVER TOGGLE =================
+
+  if (button_y && !prevY) {
+    LeverPos = !LeverPos;
+    lever.set(LeverPos);
+
+    if (LeverPos) {
+      WingPos = true;
+      wing.set(true);
+    }
+  }
+
+  prevY = button_y;
 }

@@ -26,11 +26,10 @@ motor intake = motor(PORT19, ratio6_1, false);
 motor arm = motor(PORT6, ratio36_1, false);
 inertial inertial_sensor = inertial(PORT15);
 
-digital_out outer_wing = digital_out(Brain.ThreeWirePort.G);
 digital_out scraper = digital_out(Brain.ThreeWirePort.A);
 digital_out blockStopper = digital_out(Brain.ThreeWirePort.H);
 digital_out lever = digital_out(Brain.ThreeWirePort.B);
-digital_out inner_wing = digital_out(Brain.ThreeWirePort.C);
+digital_out wing = digital_out(Brain.ThreeWirePort.C);
 
 // Format is rotation(port, reversed)
 
