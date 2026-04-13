@@ -20,7 +20,7 @@ int armMacroTask();  // forward declaration
 
 // Tunable accelerator — how much power is added per 10ms tick when ramping up
 // e.g. 5 means it takes 20 ticks (200ms) to reach 100%
-static const int LAUNCH_RAMP_STEP = 5;
+static const int LAUNCH_RAMP_STEP = 3.14159265; 
 static int currentArmPower = 0;
 
 
