@@ -10,6 +10,7 @@
 #include "../custom/include/arm.h"
 #include "../custom/include/pneumatics.h"
 #include "../custom/include/brain_screen.h"
+#include "../custom/include/pid_tuner.h"
 
 // Modify autonomous, driver, or pre-auton code below
 void runAutonomous() {
@@ -67,6 +68,10 @@ void runDriver() {
   arm.setStopping(brake);
   heading_correction = false;
 
+  if (tuning) {
+  static thread tuner(pidTunerLoop);
+}
+
   thread cosmos(screenThread);
 
   while (true) {
@@ -79,6 +84,7 @@ void runDriver() {
 
     wait(10, msec);
   }
+
 }
 
 void runPreAutonomous() {
