@@ -114,5 +114,4 @@ void runPreAutonomous() {
   intake.setStopping(brake);
   arm.setStopping(brake);
 
-  
 }
