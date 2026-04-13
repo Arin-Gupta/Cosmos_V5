@@ -14,7 +14,7 @@ controller controller_1 = controller(primary);
 // gearSetting is one of the following: ratio36_1(red), ratio18_1(green), ratio6_1(blue)
 // all chassis motors should be reversed appropriately so that they spin vertical when given a positive voltage input
 // such as driveChassis(12, 12)
-motor left_chassis1 = motor(PORT4, ratio6_1, false);
+motor left_chassis1 = motor(PORT13, ratio6_1, false);
 motor left_chassis2 = motor(PORT17, ratio6_1, true);
 motor left_chassis3 = motor(PORT20, ratio6_1, true);
 motor_group left_chassis = motor_group(left_chassis1, left_chassis2, left_chassis3);
@@ -22,14 +22,14 @@ motor right_chassis1 = motor(PORT16, ratio6_1, false);
 motor right_chassis2 = motor(PORT9, ratio6_1, false);
 motor right_chassis3 = motor(PORT5, ratio6_1, true);
 motor_group right_chassis = motor_group(right_chassis1, right_chassis2, right_chassis3);
-motor intake = motor(PORT19, ratio6_1, false);
+motor intake = motor(PORT19, ratio6_1, true);
 motor arm = motor(PORT6, ratio36_1, false);
-inertial inertial_sensor = inertial(PORT15);
+inertial inertial_sensor = inertial(PORT14);
 
-digital_out scraper = digital_out(Brain.ThreeWirePort.A);
+digital_out scraper = digital_out(Brain.ThreeWirePort.C);
 digital_out blockStopper = digital_out(Brain.ThreeWirePort.H);
 digital_out lever = digital_out(Brain.ThreeWirePort.B);
-digital_out wing = digital_out(Brain.ThreeWirePort.C);
+digital_out wing = digital_out(Brain.ThreeWirePort.G);
 
 // Format is rotation(port, reversed)
 
