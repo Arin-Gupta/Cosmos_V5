@@ -15,7 +15,7 @@ int armMacroTask() {
 
     if (armMacroID == 2) {
         // ---- Slow shot (lever down) ----
-        int speed = 30;
+        int speed = 45;
         int reverseTime = 1000;
 
         blockStopper.set(true);

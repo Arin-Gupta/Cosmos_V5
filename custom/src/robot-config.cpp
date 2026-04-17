@@ -16,14 +16,14 @@ controller controller_1 = controller(primary);
 // such as driveChassis(12, 12)
 motor left_chassis1 = motor(PORT13, ratio6_1, false);
 motor left_chassis2 = motor(PORT17, ratio6_1, true);
-motor left_chassis3 = motor(PORT20, ratio6_1, true);
+motor left_chassis3 = motor(PORT18, ratio6_1, true);
 motor_group left_chassis = motor_group(left_chassis1, left_chassis2, left_chassis3);
 motor right_chassis1 = motor(PORT16, ratio6_1, false);
 motor right_chassis2 = motor(PORT9, ratio6_1, false);
 motor right_chassis3 = motor(PORT5, ratio6_1, true);
 motor_group right_chassis = motor_group(right_chassis1, right_chassis2, right_chassis3);
 motor intake = motor(PORT19, ratio6_1, true);
-motor arm = motor(PORT6, ratio36_1, false);
+motor arm = motor(PORT6, ratio18_1, false);
 inertial inertial_sensor = inertial(PORT14);
 
 digital_out scraper = digital_out(Brain.ThreeWirePort.C);
@@ -61,7 +61,7 @@ double wheel_distance_in = (36.0 / 48.0) * 3.25 * M_PI;
 // distance_* : Linear PID for straight driving
 // turn_*     : PID for turning in place
 // heading_correction_* : PID for heading correction during linear movement
-double distance_kp = 2.4, distance_ki = 0, distance_kd = 30.4;
+double distance_kp = 1.4, distance_ki = 0.01, distance_kd = 11;
 double turn_kp = 0.8067, turn_ki = 0, turn_kd = 6;
 double heading_correction_kp = 0.7, heading_correction_ki = 0, heading_correction_kd = 32;
 

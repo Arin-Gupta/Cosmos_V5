@@ -69,13 +69,15 @@ void runDriver() {
   heading_correction = false;
 
   if (tuning) {
-  static thread tuner(pidTunerLoop);
-}
+    thread tuner(pidTunerLoop);
+    tuner.detach();
+    return; // screenThread never reached
+  }
 
+  // only runs if tuning == false
   thread cosmos(screenThread);
 
   while (true) {
-
     controllerInput();
     headingHold();
     intakeToggle();
@@ -84,7 +86,6 @@ void runDriver() {
 
     wait(10, msec);
   }
-
 }
 
 void runPreAutonomous() {
