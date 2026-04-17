@@ -61,7 +61,7 @@ double wheel_distance_in = (36.0 / 48.0) * 3.25 * M_PI;
 // distance_* : Linear PID for straight driving
 // turn_*     : PID for turning in place
 // heading_correction_* : PID for heading correction during linear movement
-double distance_kp = 1.4, distance_ki = 0.01, distance_kd = 11;
+double distance_kp = 1.4, distance_ki = 0.01, distance_kd = 10.1;
 double turn_kp = 0.8067, turn_ki = 0, turn_kd = 6;
 double heading_correction_kp = 0.7, heading_correction_ki = 0, heading_correction_kd = 32;
 
