@@ -24,7 +24,7 @@ motor right_chassis3 = motor(PORT5, ratio6_1, true);
 motor_group right_chassis = motor_group(right_chassis1, right_chassis2, right_chassis3);
 motor intake = motor(PORT19, ratio6_1, true);
 motor arm = motor(PORT6, ratio18_1, false);
-inertial inertial_sensor = inertial(PORT14);
+inertial inertial_sensor = inertial(PORT4);
 
 digital_out scraper = digital_out(Brain.ThreeWirePort.C);
 digital_out blockStopper = digital_out(Brain.ThreeWirePort.H);
@@ -61,8 +61,8 @@ double wheel_distance_in = (36.0 / 48.0) * 3.25 * M_PI;
 // distance_* : Linear PID for straight driving
 // turn_*     : PID for turning in place
 // heading_correction_* : PID for heading correction during linear movement
-double distance_kp = 1.4, distance_ki = 0.01, distance_kd = 10.1;
-double turn_kp = 0.8067, turn_ki = 0, turn_kd = 6;
+double distance_kp = 1.35, distance_ki = 0.01, distance_kd = 20.4;
+double turn_kp = 1, turn_ki = 0, turn_kd = 0.1;
 double heading_correction_kp = 0.7, heading_correction_ki = 0, heading_correction_kd = 32;
 
 // Enable or disable the use of tracking wheels
@@ -105,10 +105,10 @@ bool dir_change_end = true;     // Less accel/decel due to expecting direction c
 double min_output = 10; // Minimum output voltage to motors while chaining movements
 
 // Maximum allowed change in voltage output per 10 msec during movement
-double max_slew_accel_fwd = 11;
-double max_slew_decel_fwd = 11;
-double max_slew_accel_rev = 11;
-double max_slew_decel_rev = 11;
+double max_slew_accel_fwd = 10;
+double max_slew_decel_fwd = 10;
+double max_slew_accel_rev = 10;
+double max_slew_decel_rev = 10;
 
 // Prevents too much slipping during boomerang movements
 // Decrease if there is too much drifting and inconsistency during boomerang

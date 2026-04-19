@@ -71,8 +71,8 @@ void pidTunerLoop() {
 
         // RUN TEST DRIVE (R1 edge-triggered)
         if (controller_1.ButtonR1.pressing() && !prevR1) {
-          driveTo(-24,10000,true,12);
-          driveTo(24,10000,true,12);
+            turnToAngle(180,10000,true,6); wait(10000, msec);
+            //turnToAngle(0, 2000, false);
         }
 
         prevR1 = controller_1.ButtonR1.pressing();
