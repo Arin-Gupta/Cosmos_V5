@@ -1,6 +1,7 @@
 #include "vex.h"
 #include "motor-control.h"
 #include "../custom/include/brain_screen.h"
+#include "../custom/include/pid_tuner.h"
 
 int screenThread() {
     Brain.Screen.clearScreen();
@@ -11,9 +12,9 @@ int screenThread() {
 
     // --- Draw Boxes ---
     Brain.Screen.setPenColor(white);
-    Brain.Screen.drawRectangle(30,25,180,120);      // Inertial
-    Brain.Screen.drawRectangle(30,155,180,60);      // Team ID
-    Brain.Screen.drawRectangle(225,30,230,180);     // Motor temps
+    Brain.Screen.drawRectangle(30,25,180,120);
+    Brain.Screen.drawRectangle(30,155,180,60);
+    Brain.Screen.drawRectangle(225,30,230,180);
 
     // --- Labels ---
     Brain.Screen.printAt(40,50,"X:");
@@ -30,22 +31,39 @@ int screenThread() {
     Brain.Screen.printAt(265,175,"INT:");
     Brain.Screen.printAt(265,195,"ARM:");
 
-    while(true){
-        Brain.Screen.setPenColor(white);
+    while (true) {
+        if (tuning) {
+            Brain.Screen.clearScreen();
+            Brain.Screen.setFont(fontType::mono20);
+            Brain.Screen.setPenColor(white);
+            char buf[32];
 
-        // --- X / Y ---
+            snprintf(buf, sizeof(buf), "Mode: %s", modeNames[mode]);
+            Brain.Screen.printAt(10, 40, buf);
+
+            snprintf(buf, sizeof(buf), "%s kP: %.2f", selected == 0 ? ">" : " ", *kp);
+            Brain.Screen.printAt(10, 80, buf);
+
+            snprintf(buf, sizeof(buf), "%s kI: %.4f", selected == 1 ? ">" : " ", *ki);
+            Brain.Screen.printAt(10, 120, buf);
+
+            snprintf(buf, sizeof(buf), "%s kD: %.2f", selected == 2 ? ">" : " ", *kd);
+            Brain.Screen.printAt(10, 160, buf);
+            wait(200, msec);
+            continue;
+        }
+
+        // --- Normal telemetry ---
+        Brain.Screen.setPenColor(white);
         Brain.Screen.printAt(140,50,"%6.2f",x_pos);
         Brain.Screen.printAt(140,85,"%6.2f",y_pos);
 
-        // --- Heading normalized to ±180 ---
         double h = getInertialHeading();
         while(h > 180)  h -= 360;
         while(h <= -180) h += 360;
-
         Brain.Screen.printAt(140,120,"%6.2f",h);
 
-        // --- Motor temps ---
-        auto printTemp=[&](int y,motor&m){
+        auto printTemp=[&](int y, motor& m){
             double t = m.temperature(celsius);
             Brain.Screen.setPenColor(t>=55?red:t>=40?yellow:green);
             Brain.Screen.printAt(350,y,"%5.1fC  ",t);
@@ -60,7 +78,7 @@ int screenThread() {
         printTemp(175,intake);
         printTemp(195,arm);
 
-        wait(100,msec);
+        wait(100, msec);
     }
     return 0;
 }

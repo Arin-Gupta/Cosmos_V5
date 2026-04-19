@@ -63,29 +63,26 @@ bool prevUp = false, prevL2 = false, prevY = false, prevX = false;
 
 
 void runDriver() {
-  stopChassis(brake);
-  intake.setStopping(brake);
-  arm.setStopping(brake);
-  heading_correction = false;
+    stopChassis(brake);
+    intake.setStopping(brake);
+    arm.setStopping(brake);
+    heading_correction = false;
 
-  if (tuning) {
-    thread tuner(pidTunerLoop);
-    tuner.detach();
-    return; // screenThread never reached
-  }
+    thread cosmos(screenThread); // always launched — owns all screen drawing
 
-  // only runs if tuning == false
-  thread cosmos(screenThread);
+    if (tuning) {
+        thread tuner(pidTunerLoop);
+        tuner.detach();
+    }
 
-  while (true) {
-    controllerInput();
-    headingHold();
-    intakeToggle();
-    armControl();
-    pneumaticsControl();
-
-    wait(10, msec);
-  }
+    while (true) {
+        controllerInput();
+        headingHold();
+        intakeToggle();
+        armControl();
+        pneumaticsControl();
+        wait(10, msec);
+    }
 }
 
 void runPreAutonomous() {
@@ -103,7 +100,7 @@ void runPreAutonomous() {
     wait(10, msec);
   }
 
-  thread nova(screenThread);
+  //thread nova(screenThread);
   
   // odom tracking
   resetChassis();
