@@ -61,9 +61,9 @@ double wheel_distance_in = (36.0 / 48.0) * 3.25 * M_PI;
 // distance_* : Linear PID for straight driving
 // turn_*     : PID for turning in place
 // heading_correction_* : PID for heading correction during linear movement
-double distance_kp = 1.35, distance_ki = 0.01, distance_kd = 20.4;
-double turn_kp = 0.85, turn_ki = 0, turn_kd = 8.05;
-double heading_correction_kp = 0.7, heading_correction_ki = 0, heading_correction_kd = 32;
+double distance_kp = 1.35, distance_ki = 0.02, distance_kd = 21.1;
+double turn_kp = 0.85, turn_ki = 0.01, turn_kd = 8.05;
+double heading_correction_kp = 1.2, heading_correction_ki = 0.01, heading_correction_kd = 8.77;
 
 // Enable or disable the use of tracking wheels
 bool using_horizontal_tracker = false;  // Set to true if a horizontal tracking wheel is installed and used for odometry

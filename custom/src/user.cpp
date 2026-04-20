@@ -14,9 +14,11 @@
 
 // Modify autonomous, driver, or pre-auton code below
 void runAutonomous() {
+ // thread screen = thread(screenThread);
   int auton_selected = 1;
   switch(auton_selected) {
     case 1:
+    _R4BP();
       break;  
     case 2:
       break;  
@@ -93,7 +95,7 @@ void runPreAutonomous() {
     // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   wing.set(true);
-  scraper.set(true);
+  scraper.set(false);
   lever.set(true);
 
   // Calibrate inertial sensor

@@ -52,10 +52,13 @@ void pidTunerLoop() {
         }
 
 if (controller_1.ButtonR1.pressing() && !prevR1) {
-            driveTo(-72, 5000, true, 12); wait(500, msec);
-            driveTo(0, 5000, true, 12);
-        }
-
-        wait(50, msec);
+    if (turnToggle) {
+        turnToAngle(0, 3000, true, 6);
+    } else {
+        turnToAngle(180, 3000, true, 6);
+    }
+    turnToggle = !turnToggle;
+}
+            wait(50, msec);
     } // closes while (true)
 } // closes pidTunerLoop()
