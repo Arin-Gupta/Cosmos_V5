@@ -3,13 +3,14 @@
 #include "../custom/include/pid_tuner.h"
 #include "../custom/include/robot-config.h"
 
+bool turnToggle = false;
+
 extern bool prevR1;
 int selected = 0;
 int mode = 0;
 bool tuning = true;
 
-static const char* modeNames[] = { "Distance", "Turn", "Heading" };
-
+const char* modeNames[] = { "Distance", "Turn", "Heading" };
 double* kp = nullptr;
 double* ki = nullptr;
 double* kd = nullptr;
@@ -51,8 +52,17 @@ void pidTunerLoop() {
         }
 
         if (controller_1.ButtonR1.pressing() && !prevR1) {
-            turnToAngle(180, 10000, true, 6);
-            wait(10000, msec);
+
+// inside pidTunerLoop, replace the R1 block:
+if (controller_1.ButtonR1.pressing() && !prevR1) {
+    if (turnToggle) {
+        turnToAngle(0, 3000, true, 6);
+    } else {
+        turnToAngle(180, 3000, true, 6);
+    }
+    turnToggle = !turnToggle;
+}
+            wait(500, msec);
         }
         prevR1 = controller_1.ButtonR1.pressing();
 

@@ -63,16 +63,21 @@ bool prevUp = false, prevL2 = false, prevY = false, prevX = false;
 
 
 void runDriver() {
+  scraper.set(true);
     stopChassis(brake);
     intake.setStopping(brake);
     arm.setStopping(brake);
     heading_correction = false;
 
-    thread cosmos(screenThread); // always launched — owns all screen drawing
+    thread cosmos(screenThread);
 
     if (tuning) {
         thread tuner(pidTunerLoop);
         tuner.detach();
+
+        while (true) {
+            wait(10, msec); // pidTunerLoop handles everything
+        }
     }
 
     while (true) {
@@ -84,7 +89,6 @@ void runDriver() {
         wait(10, msec);
     }
 }
-
 void runPreAutonomous() {
     // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
