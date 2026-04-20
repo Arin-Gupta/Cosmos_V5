@@ -1,7 +1,7 @@
 #include "../custom/include/arm_macro.h"
 #include "../custom/include/arm.h"
 
-static const int LAUNCH_RAMP_STEP = 5;
+static const float LAUNCH_RAMP_STEP = 5;
 int currentArmPower = 0;
 
 volatile bool armMacroRunning = false;
@@ -37,7 +37,7 @@ int armMacroTask() {
     } else {
         // ---- Fast shot with ramp (lever up) ----
         // Tune LAUNCH_RAMP_STEP in arm.cpp to control how fast it accelerates
-        int power = 0;
+        float power = 0;
         blockStopper.set(true);
 
         // Ramp up to 100%
