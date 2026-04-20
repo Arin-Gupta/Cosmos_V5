@@ -49,6 +49,13 @@ int screenThread() {
 
             snprintf(buf, sizeof(buf), "%s kD: %.2f", selected == 2 ? ">" : " ", *kd);
             Brain.Screen.printAt(10, 160, buf);
+
+            double h = getInertialHeading();
+            while (h >  180) h -= 360;
+            while (h <= -180) h += 360;
+            snprintf(buf, sizeof(buf), "X:%.2f Y:%.2f H:%.2f", x_pos, y_pos, h);
+            Brain.Screen.printAt(10, 210, buf);
+
             wait(200, msec);
             continue;
         }

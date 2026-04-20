@@ -51,21 +51,11 @@ void pidTunerLoop() {
             if (selected == 2) *kd -= 0.1;
         }
 
-        if (controller_1.ButtonR1.pressing() && !prevR1) {
-
-// inside pidTunerLoop, replace the R1 block:
 if (controller_1.ButtonR1.pressing() && !prevR1) {
-    if (turnToggle) {
-        turnToAngle(0, 3000, true, 6);
-    } else {
-        turnToAngle(180, 3000, true, 6);
-    }
-    turnToggle = !turnToggle;
-}
-            wait(500, msec);
+            driveTo(-72, 5000, true, 12); wait(500, msec);
+            driveTo(0, 5000, true, 12);
         }
-        prevR1 = controller_1.ButtonR1.pressing();
 
-        wait(200, msec);
-    }
-}
+        wait(50, msec);
+    } // closes while (true)
+} // closes pidTunerLoop()
