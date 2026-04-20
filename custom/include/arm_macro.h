@@ -7,6 +7,8 @@ extern volatile bool armMacroRunning;
 extern volatile bool armMacroCancel;
 extern volatile int armMacroID;
 extern vex::thread armThread;  // use vex::thread
+extern int currentArmPower;
+
 
 int armMacroTask();
 

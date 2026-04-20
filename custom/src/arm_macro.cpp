@@ -22,13 +22,15 @@ int armMacroTask() {
 
         arm.spin(forward, speed, percent);
         for (int i = 0; i < 100; i++) {
-            if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            //if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            if (armMacroCancel) { arm.stop(); armMacroRunning = false; return 0; }
             wait(10, msec);
         }
 
         arm.spin(reverse, speed, percent);
         for (int i = 0; i < reverseTime / 10; i++) {
-            if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            //if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            if (armMacroCancel) { arm.stop(); armMacroRunning = false; return 0; }
             wait(10, msec);
         }
 
@@ -40,7 +42,8 @@ int armMacroTask() {
 
         // Ramp up to 100%
         while (power < 100) {
-            if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            //if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            if (armMacroCancel) { arm.stop(); armMacroRunning = false; return 0; }
             power += LAUNCH_RAMP_STEP;
             if (power > 100) power = 100;
             arm.spin(forward, power, percent);
@@ -52,18 +55,20 @@ int armMacroTask() {
         int rampTime = (100 / LAUNCH_RAMP_STEP) * 10;
         int holdTime = 1000 - rampTime;
         for (int i = 0; i < holdTime / 10; i++) {
-            if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            //if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            if (armMacroCancel) { arm.stop(); armMacroRunning = false; return 0; }
             wait(10, msec);
         }
 
         arm.spin(reverse, 100, percent);
         for (int i = 0; i < 60; i++) {  // 600ms reverse
-            if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            //if (armMacroCancel) { arm.stop(); blockStopper.set(false); armMacroRunning = false; return 0; }
+            if (armMacroCancel) { arm.stop(); armMacroRunning = false; return 0; }
             wait(10, msec);
         }
     }
 
-    blockStopper.set(false);
+    //blockStopper.set(false);
     arm.stop();
     armMacroRunning = false;
     armMacroID = 0;

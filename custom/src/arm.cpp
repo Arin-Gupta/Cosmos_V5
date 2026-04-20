@@ -1,6 +1,7 @@
 #include "vex.h"
 #include "../custom/include/arm.h"
 #include "../custom/include/intake.h"
+#include "../custom/include/arm_macro.h"
 
 // From user.cpp
 extern bool button_a;
@@ -20,8 +21,6 @@ int armMacroTask();  // forward declaration
 
 // Tunable accelerator — how much power is added per 10ms tick when ramping up
 // e.g. 5 means it takes 20 ticks (200ms) to reach 100%
-static const int LAUNCH_RAMP_STEP = 3.14159265; 
-static int currentArmPower = 0;
 
 
 void armControl() {
@@ -66,4 +65,11 @@ void armControl() {
   }
 
   prevL1 = l1;
+
+  // ================= BLOCK STOPPER =================
+  // Keep block stopper open while L1 is held (even after macro finishes)
+  // Close it as soon as L1 is released and no macro is running
+  if (!armMacroRunning && !l1) {
+    blockStopper.set(false);
+  }
 }
