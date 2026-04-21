@@ -9,32 +9,39 @@
 #include "motor-control.h"
 
 void scraperthread() {
-    wait(950, msec);
-    scraper.set(true); wait(500, msec);
+    wait(1100, msec);
+    scraper.set(true); wait(600, msec);
     scraper.set(false);
 }
 
-void _R4BP() {
+void score() {
+    blockStopper.set(true);
+    arm.spin(forward, 100, percent);
+    wait(1000, msec);
+    arm.spin(reverse, 100, percent);
+    wait(500, msec);
+    arm.stop();
+    blockStopper.set(false);
+}
+
+void _R4B() {
     // Example of using the R4BP function to drive forward 24 inches while maintaining a heading of 0 degrees
     // and then turn to 90 degrees
 
     // Collect 4 Blocks
     thread meow = thread(scraperthread);
     intake.spin(forward, 100, percent);
-    turnToAngle(14,500,true,10);
-    moveToPoint(8,27,1,2000,true,10,false);
+    turnToAngle(13,500,true,10);
+    moveToPoint(6.5,29,1,2000,true,6,false);
+    //moveToPoint(6.5,29,-1,2000,true,10,false);
     lever.set(false);
-    wait(200,msec);
-
-    // Position in Front of Goal
-
-
-    // Align
-
-
-    // Shoot
-
-    //turnToAngle(-73, 2000, true, 10);
-    //driveTo(-48,500,true,12);
-    
+    wait(400,msec);
+    turnToAngle(-75,1000,true,10);
+    driveTo(-300,2000,true,12);
+    score();
+    arm.spin(forward, 100, percent);
+    wait(1000, msec);
+    arm.spin(reverse, 100, percent);
+    wait(500, msec);
+    arm.stop();
 }
