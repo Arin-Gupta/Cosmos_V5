@@ -8,11 +8,22 @@
 #include "../include/autonomous.h"
 #include "motor-control.h"
 
-void scraperthread() {
-    wait(900, msec);
-    scraper.set(true); wait(1000, msec);
+void scraperthread1() {
+    wait(1100, msec);
+    scraper.set(true); wait(750, msec);
     scraper.set(false);
 }
+
+void scraperthread2() {
+    wait(900, msec);
+    scraper.set(true); wait(750, msec);
+    scraper.set(false);
+}
+
+void scraperthread() {
+
+}
+
 
 void score() {
     blockStopper.set(true);
@@ -23,6 +34,7 @@ void score() {
     arm.stop();
 }
 
+/*
 void _R4B() {
     // Example of using the R4BP function to drive forward 24 inches while maintaining a heading of 0 degrees
     // and then turn to 90 degrees
@@ -45,19 +57,24 @@ void _R4B() {
     arm.stop();
 }
 
+*/
 void _L4B() {
     // Example of using the R4BP function to drive forward 24 inches while maintaining a heading of 0 degrees
     // and then turn to 90 degrees
 
     // Collect 4 Blocks
-    thread meow = thread(scraperthread);
+    thread meow = thread(scraperthread1);
     intake.spin(forward, 100, percent);
     turnToAngle(-13,500,true,10);
     moveToPoint(-6.5,29,1,2000,true,6,false);
     //moveToPoint(6.5,29,-1,2000,true,10,false);
     lever.set(true);
     wait(400,msec);
-    turnToAngle(76,1000,true,10);
+    turnToAngle(62,1000,true,10);
+    wait(3000, msec);
+    driveTo(-500,2000,true,12); wait(50,msec); driveTo(10,500,true,8); wait(50,msec);
+    score();
+    /*
     driveTo(-300,2000,true,12);
     driveTo(10,1000,true,8);
     driveTo(-50,1000,true,12);
@@ -67,20 +84,13 @@ void _L4B() {
     arm.spin(reverse, 100, percent);
     wait(500, msec);
     arm.stop();
-    x_pos = 0;
-    y_pos = 0;
-        blockStopper.set(false);
-    turnToAngle(-40,1000,true,12);
-    moveToPoint(-6.5,7.25,1,2000,true,7,false);
-    turnToAngle(0,1000,true,9);
-    moveToPoint(-9,-15,-1,3000,true,8,false);
-    //turnToAngle(90,1000,true,9);
+    */
 }
 
 void _L6B() {
     
     // Collect 4 Blocks
-    thread meow = thread(scraperthread);
+    thread meow = thread(scraperthread1);
     intake.spin(forward, 100, percent);
     turnToAngle(-13,500,true,10);
     moveToPoint(-6.5,29,1,2000,true,6,false);
@@ -88,7 +98,7 @@ void _L6B() {
     wait(400,msec);
 
     // Collect 2 more blocks 
-    turnToAngle(-50,1000,true,10);    thread woof = thread(scraperthread);
+    turnToAngle(-50,1000,true,10);    thread woof = thread(scraperthread2);
     //moveToPoint(-23,48,1,2000,true,6,false);
     //wait(500,msec);
 
@@ -99,7 +109,7 @@ void _R4B2() {
     // and then turn to 90 degrees
 
     // Collect 4 Blocks
-    thread meow = thread(scraperthread);
+    thread meow = thread(scraperthread1);
     intake.spin(forward, 100, percent);
     turnToAngle(13,500,true,10);
     moveToPoint(6.5,29,1,2000,true,6,false);
@@ -107,7 +117,7 @@ void _R4B2() {
     wait(400,msec);
 
     // Collect 2 more blocks 
-    turnToAngle(50,1000,true,10);    thread woof = thread(scraperthread);
+    turnToAngle(50,1000,true,10);    thread woof = thread(scraperthread2);
     moveToPoint(23,48,1,2000,true,6,false);
     wait(500,msec);
 
@@ -133,24 +143,26 @@ void _R4B2() {
 
 void _L4B2() {
     // Collect 4 Blocks
-    thread meow = thread(scraperthread);
+    thread meow = thread(scraperthread1);
     intake.spin(forward, 100, percent);
-    turnToAngle(-13,500,true,10);
+    //turnToAngle(-13,500,true,10);
     moveToPoint(-6.5,29,1,2000,true,6,false);
-    lever.set(true);
+    //lever.set(true);
     wait(400,msec);
 
     
     // Collect 2 more blocks 
-    turnToAngle(-69,1000,true,10);    thread woof = thread(scraperthread);
+    turnToAngle(-69,1000,true,10);    
+    thread woof = thread(scraperthread2);
     moveToPoint(-21.75,37,1,2000,true,6,false);
     wait(500,msec);
 
     // Score 2 blocks
-    moveToPoint(-6.5,29,-1,2000,true,6,false); wait(50, msec);
+    moveToPoint(3.6,23.5,-1,2000,true,6,false); wait(50, msec);
 
+
+    turnToAngle(-145,1000,true,10);
     /*
-    turnToAngle(220,1000,true,10);
     moveToPoint(1.5,31,1,2000,true,6,false);
     intake.spin(reverse, 30, percent); wait(600, msec);
     intake.spin(forward, 100, percent);
