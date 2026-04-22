@@ -43,7 +43,7 @@ void pneumaticsControl() {
 
   if (button_y && !prevY) {
     LeverPos = !LeverPos;
-    lever.set(LeverPos);
+    lever.set(!LeverPos);
 
     if (LeverPos) {
       WingPos = true;

@@ -54,7 +54,7 @@ void armControl() {
   // ================= ARM MACROS =================
 
   if (l1 && !prevL1 && !armMacroRunning) {
-    if (LeverPos) {
+    if (!LeverPos) {
       // Lever down — use slow shot
       armMacroID = 2;
     } else {
