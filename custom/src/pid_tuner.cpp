@@ -8,7 +8,7 @@ bool turnToggle = false;
 extern bool prevR1;
 int selected = 0;
 int mode = 0;
-bool tuning = true;
+bool tuning = false;
 
 const char* modeNames[] = { "Distance", "Turn", "Heading" };
 double* kp = nullptr;
