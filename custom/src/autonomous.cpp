@@ -70,10 +70,10 @@ void _L4B() {
     //moveToPoint(6.5,29,-1,2000,true,10,false);
     lever.set(true);
     wait(400,msec);
-    turnToAngle(62,1000,true,10);
+    turnToAngle(45,1000,true,4);
     wait(3000, msec);
     driveTo(-500,2000,true,12); wait(50,msec); driveTo(10,500,true,8); wait(50,msec);
-    score();
+    score(); 
     /*
     driveTo(-300,2000,true,12);
     driveTo(10,1000,true,8);
@@ -174,4 +174,22 @@ void _L4B2() {
     driveTo(-300,2000,true,12);
     score();
     */
+}
+
+void ninety() {
+    turnToAngle(90,2000,true,12);
+    turnToAngle(0,2000,true,12);
+}
+
+void Skills20() {
+    scraper.set(true);
+    intake.spin(forward, 100, percent);
+    
+    driveTo(3,3000,true,6); wait(100,msec); scraper.set(false);
+    wait(1000,msec);
+    driveTo(10,3000,true,12); wait(500,msec);
+    //turnToAngle(180,2000,true,12);
+    score();
+    driveTo(5,2000,true,12);
+    score();
 }

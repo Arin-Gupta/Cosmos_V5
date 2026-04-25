@@ -1,10 +1,10 @@
 {
 	"project": {
-		"name": "Cosmos_V1",
+		"name": "Cosmos_V3",
 		"slot": 1,
 		"description": "Empty V5 C++ Project",
 		"platform": "V5",
-		"creationDate": "Mon, 13 Apr 2026 18:12:37 GMT",
+		"creationDate": "Sat, 25 Apr 2026 13:24:05 GMT",
 		"language": "cpp",
 		"sdkVersion": "V5_20240802_15_00_00",
 		"cpp": {
