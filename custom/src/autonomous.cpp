@@ -71,10 +71,6 @@ void _R4B() {
     wait(500, msec);
     arm.stop();
     blockStopper.set(false);
-
-    // Small Block Push
-    driveTo(5,1000,true,5);
-    driveTo(10,1000,true,12);
 }
 
 

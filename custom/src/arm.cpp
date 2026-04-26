@@ -7,6 +7,8 @@ extern bool button_a;
 extern bool button_b;
 extern bool l1;
 extern bool prevL1;
+extern bool button_up_arrow;  
+extern bool prevUp;
 
 extern volatile bool armMacroRunning;
 extern volatile bool armMacroCancel;
@@ -40,18 +42,20 @@ void armControl() {
     arm.spin(forward, 0, percent);
   }
 
-  // ================= ARM MACROS =================
+// ================= ARM MACROS =================
 
   if (l1 && !prevL1 && !armMacroRunning) {
-    if (LeverPos) {
-      armMacroID = 2;  // slow shot
-    } else {
-      armMacroID = 1;  // fast shot
-    }
+    armMacroID = 1;  // L1 = fast shot always
+    armThread = vex::thread(armMacroTask);
+  }
+
+  if (button_up_arrow && !prevUp && !armMacroRunning) {
+    armMacroID = 2;  // Up arrow = slow shot always
     armThread = vex::thread(armMacroTask);
   }
 
   prevL1 = l1;
+  prevUp = button_up_arrow;
 
   // ================= BLOCK STOPPER =================
   if (!armMacroRunning && !l1) {

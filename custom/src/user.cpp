@@ -90,7 +90,7 @@ void runDriver() {
 
     while (true) {
         controllerInput();
-        headingHold();
+        //headingHold();
         intakeToggle();
         armControl();
         pneumaticsControl();
