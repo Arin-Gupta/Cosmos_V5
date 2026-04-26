@@ -15,7 +15,7 @@
 // Modify autonomous, driver, or pre-auton code below
 void runAutonomous() {
  // thread screen = thread(screenThread);
-  int auton_selected = 6;
+  int auton_selected = 1;
   switch(auton_selected) {
     case 1:
     _R4B();

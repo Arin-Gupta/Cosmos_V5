@@ -24,9 +24,11 @@ int armMacroTask() {
         for (int i = 0; i < 100; i++) {
             if (armMacroCancel) { arm.stop(); armMacroRunning = false; return 0; }
             wait(10, msec);
+    
         }
-
-    } else {
+    } 
+    
+    else {
         // ---- Fast shot (lever up) ----
         blockStopper.set(true);
 

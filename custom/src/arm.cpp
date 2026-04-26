@@ -43,7 +43,7 @@ void armControl() {
   // ================= ARM MACROS =================
 
   if (l1 && !prevL1 && !armMacroRunning) {
-    if (!LeverPos) {
+    if (LeverPos) {
       armMacroID = 2;  // slow shot
     } else {
       armMacroID = 1;  // fast shot
