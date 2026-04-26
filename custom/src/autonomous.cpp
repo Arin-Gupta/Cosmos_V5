@@ -71,6 +71,17 @@ void _R4B() {
     wait(500, msec);
     arm.stop();
     blockStopper.set(false);
+
+    wait(1000,msec);
+
+    /*
+    thread smth = thread(scraperthread2);
+    turnToAngle(-180,1000,true,12);
+    driveTo(45,3000,true,8);
+    driveTo(-60,2000,true,8);
+    score();
+    */
+
 }
 
 
@@ -79,6 +90,7 @@ void _L4B() {
     // and then turn to 90 degrees
 
     // Collect 4 Blocks
+    wait(4000,msec);
     thread meow = thread(scraperthread1);
     intake.spin(forward, 100, percent);
     turnToAngle(-13,500,true,10);
@@ -86,21 +98,11 @@ void _L4B() {
     //moveToPoint(6.5,29,-1,2000,true,10,false);
     lever.set(true);
     wait(400,msec);
-    turnToAngle(45,1000,true,4);
+    turnToAngle(55,1000,true,4);
     wait(3000, msec);
     driveTo(-500,2000,true,12); wait(50,msec); driveTo(10,500,true,8); wait(50,msec);
     score(); 
-    /*
-    driveTo(-300,2000,true,12);
-    driveTo(10,1000,true,8);
-    driveTo(-50,1000,true,12);
-    score();
-    arm.spin(forward, 100, percent);
-    wait(1000, msec);
-    arm.spin(reverse, 100, percent);
-    wait(500, msec);
-    arm.stop();
-    */
+    
 }
 
 void _L6B() {
@@ -198,6 +200,7 @@ void ninety() {
 }
 
 void Skills20() {
+
     scraper.set(true);
     intake.spin(forward, 100, percent);
     
@@ -208,4 +211,13 @@ void Skills20() {
     score();
     driveTo(5,2000,true,12);
     score();
+}
+
+void Skills15() {
+    intake.spin(forward,100,percent);
+    wait(1000,msec);
+    intake.stop();
+}
+
+void nothing() {
 }

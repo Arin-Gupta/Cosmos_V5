@@ -36,8 +36,10 @@ void runAutonomous() {
     Skills20();
       break;
     case 7:
+    Skills15();
       break;
     case 8:
+    nothing();
       break;
     case 9:
       break;
@@ -90,7 +92,7 @@ void runDriver() {
 
     while (true) {
         controllerInput();
-        //headingHold();
+        headingHold();
         intakeToggle();
         armControl();
         pneumaticsControl();
