@@ -62,6 +62,7 @@ void _R4B() {
     // Safety Align
     driveTo(1,500,true,4);
     driveTo(-300,1000,true,12);
+    turnToAngle(-180,1000,true,12);
 
     // Double Score for Safety
     score();
@@ -73,14 +74,10 @@ void _R4B() {
     blockStopper.set(false);
 
     wait(1000,msec);
-
-    /*
-    thread smth = thread(scraperthread2);
-    turnToAngle(-180,1000,true,12);
+    scraper.set(true);
     driveTo(45,3000,true,8);
-    driveTo(-60,2000,true,8);
+    driveTo(-50,2000,true,9);
     score();
-    */
 
 }
 
@@ -90,16 +87,13 @@ void _L4B() {
     // and then turn to 90 degrees
 
     // Collect 4 Blocks
-    wait(4000,msec);
     thread meow = thread(scraperthread1);
     intake.spin(forward, 100, percent);
     turnToAngle(-13,500,true,10);
     moveToPoint(-6.5,29,1,2000,true,6,false);
     //moveToPoint(6.5,29,-1,2000,true,10,false);
     lever.set(true);
-    wait(400,msec);
-    turnToAngle(55,1000,true,4);
-    wait(3000, msec);
+    turnToAngle(50,1000,true,4);
     driveTo(-500,2000,true,12); wait(50,msec); driveTo(10,500,true,8); wait(50,msec);
     score(); 
     
