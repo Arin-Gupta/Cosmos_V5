@@ -1,17 +1,13 @@
 // custom/include/slew.h
 #pragma once
+#include <cmath>
 
-// Slew rate limiter for direction-aware motor control.
-// Call applySlewRate() each loop tick for each motor channel.
+// --- Drive slew ---
+const double SLEW_NORMAL   = 127.0;   // same-direction step limit (127 = instant)
 
-// --- Tunable Parameters ---
-// How much the output can change per loop when continuing in the same direction.
-// 127 = effectively instant (no limiting). Lower = smoother acceleration.
-const double SLEW_NORMAL = 127.0;
+// Reversal speed as a percentage of full output (0–100)
+// e.g. 16 = the output can change by 16% of 127 per tick during a direction flip
+const double SLEW_REVERSAL_PCT = 50.0;
+const double SLEW_REVERSAL = (SLEW_REVERSAL_PCT / 100.0) * 127.0;
 
-// How much the output can change per loop when reversing direction.
-// Lower = slower/safer reversal. 6–12 is a good starting range.
-const double SLEW_REVERSAL = 8.0;
-// --------------------------
-
-double applySlewRate(double target, double previous);
+double applySlewRate(double target, double previous, double slew_normal, double slew_reversal);
