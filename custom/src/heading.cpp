@@ -12,7 +12,7 @@ static double prev_drive = 0.0;
 
 static int hold_ticks = 0;
 
-const int REVERSAL_HOLD_TICKS = 10;
+const int REVERSAL_HOLD_TICKS = 1;
 
 bool isReversing(double target, double previous) {
     return (target * previous < 0);
