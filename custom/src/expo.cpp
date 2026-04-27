@@ -8,7 +8,7 @@
 
 // Drive
 int drive_deadband = 4;
-int drive_min_output = 8;
+int drive_min_output = 6;
 double drive_expo = 0.6;
 
 // Turn

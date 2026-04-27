@@ -19,30 +19,17 @@ void runAutonomous() {
   switch(auton_selected) {
     case 1:
     _R4B();
-      break;  
+      break;    
     case 2:
-    _R4B2();
-    break;  
-    case 3:
     _L4B();
       break;
-    case 4:
-    _L4B2();
-      break;
-    case 5:
-    ninety();
-      break;
-    case 6:
+    case 3:
     Skills20();
-      break;
-    case 7:
-    Skills15();
       break;
     case 8:
     nothing();
       break;
-    case 9:
-      break;
+
  
   }
 }
@@ -73,7 +60,7 @@ bool prevUp = false, prevL2 = false, prevY = false, prevX = false;
 
 
 void runDriver() {
-  scraper.set(false);
+    scraper.set(false);
     stopChassis(brake);
     intake.setStopping(brake);
     arm.setStopping(brake);
